@@ -5,6 +5,7 @@ conecte a los servidores alojados en Estados Unidos.
 #>
 
 $Hosts =	
+"15.228.0.0/16",
 "18.228.0.0/16", 
 "18.229.0.0/16",
 "18.230.0.0/16",
