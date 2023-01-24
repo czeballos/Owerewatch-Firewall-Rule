@@ -1,30 +1,35 @@
 <#
-Este script crea una regla en el firewall de Windows que bloquea la coneción 
-a los servidores de Blizzard en Brasil "SAE-1", haciendo que el cliente se 
+Este script crea reglas en el firewall de Windows que bloquea la coneción 
+a los servidores de Blizzard en Brasil, haciendo que el cliente se 
 conecte a los servidores alojados en Estados Unidos.
 #>
 
 $Hosts =	
-"15.228.0.0/16",
-"18.228.0.0/16", 
-"18.229.0.0/16",
-"18.230.0.0/16",
-"18.231.0.0/16", 
-"52.67.0.0/16", 
-"52.94.0.0/16",
-"52.95.0.0/16",
-"52.207.0.0/16", 
-"54.94.0.0/16", 
-"54.207.0.0/16", 
-"54.232.0.0/16", 
-"54.233.0.0/16", 
-"177.71.0.0/16"
+"34.94.0.0/16",
+"34.95.0.0/16",
+"34.151.0.0/16",
+"35.95.0.0/16",
+"35.151.0.0/16",
+"35.198.0.0/16",
+"35.199.0.0/16",
+"35.235.0.0/16",
+"35.247.0.0/16"
 
 function CreateRule {
 	$GamePath = Read-Host "Indique la ruta donde está instalado Overwatch [ej. c:\Overwatch\_retail_\Overwatch.exe]"
-	New-NetFirewallRule -DisplayName "Overwatch" `
+	$GamePath = Read-Host "Indique la ruta donde está instalado Battlenet [ej. c:\ProgramFiles (x86)\Battle.net\Battle.net.exe"
+
+	New-NetFirewallRule -DisplayName "Overwatch2" `
 		-Direction Outbound `
 		-Program $GamePath `
+		-LocalPort Any `
+		-Protocol Any `
+		-Action Block `
+		-RemoteAddress $Hosts
+
+	New-NetFirewallRule -DisplayName "Battlenet" `
+		-Direction Outbound `
+		-Program $Battlenet `
 		-LocalPort Any `
 		-Protocol Any `
 		-Action Block `
@@ -32,11 +37,12 @@ function CreateRule {
 }
 
 function RemoveRule {
-	Remove-NetFirewallRule -DisplayName "Overwatch"
+	Remove-NetFirewallRule -DisplayName "Overwatch2"
+	Remove-NetFirewallRule -DisplayName "Battlenet"
 }
 
 
-if ($(Get-NetFirewallRule -DisplayName "Overwatch" -ErrorAction SilentlyContinue)) {
+if ($(Get-NetFirewallRule -DisplayName "Overwatch2" -ErrorAction SilentlyContinue)) {
 	RemoveRule
 	CreateRule	
 }
@@ -45,4 +51,4 @@ else {
 }
 
 Clear-Host
-Write-Host "La regla fue creada satisfactoriamente."
+Write-Host "Las reglas fueron creadas satisfactoriamente."
